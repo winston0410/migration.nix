@@ -3,7 +3,7 @@
 
   outputs = { ... }:
     {
-        postgres = {
+        postgres = let 
             setup = ''
                 touch ./seed.sql
                 mkdir -p ./migrations
@@ -20,9 +20,17 @@
                 dropdb --if-exists -f -U "$POSTGRES_USER" "$DATABASE_NAME"
                 createdb -U postgres "$DATABASE_NAME"
             '';
-
+            
             seed = ''
                 psql -U postgres -d $DATABASE_NAME < ./seed.sql
+            '';
+        in {
+            inherit setup migration seed;
+
+            all = ''
+                ${setup}
+                ${migration}
+                ${seed}
             '';
         };
     };

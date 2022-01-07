@@ -17,6 +17,10 @@
                   POSTGRES_USER="postgres"
                 fi
                 
+                if [ "$DATABASE_URL" == "" ]; then
+                  DATABASE_URL="postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost/$DATABASE_NAME"
+                fi
+                
                 dropdb --if-exists -f -U "$POSTGRES_USER" "$DATABASE_NAME"
                 createdb -U postgres "$DATABASE_NAME"
             '';
